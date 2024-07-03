@@ -6,7 +6,7 @@ import shelve
 
 load_dotenv()
 
-st.title("Streamlit Chatbot Interface")
+st.title("TheraBot")
 
 USER_AVATAR = "👤"
 BOT_AVATAR = "🤖"
