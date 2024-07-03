@@ -17,6 +17,9 @@ headers = {
     "Content-Type": "application/json"
 }
 
+# Define the system prompt
+SYSTEM_PROMPT = "You are an expert mental health assistant. Answer the following question clearly and concisely. You give advice to a user who is seeking help for their mental health."
+
 # Load chat history from shelve file
 def load_chat_history():
     with shelve.open("chat_history") as db:
@@ -45,7 +48,7 @@ for message in st.session_state.messages:
 
 # Main chat interface
 if prompt := st.chat_input("How can I help?"):
-    st.session_state.messages.append({"role": "user", "content": f"below is a question, answer the question\n{prompt}\nCan you please advise me?"})
+    st.session_state.messages.append({"role": "user", "content": f"Question: {prompt}\nPlease provide a detailed and clear response to the question above. If you do not know the answer, kindly state that and provide suggestions for further inquiries."})
     print(st.session_state.messages)
     with st.chat_message("user", avatar=USER_AVATAR):
         st.markdown(prompt)
@@ -56,9 +59,9 @@ if prompt := st.chat_input("How can I help?"):
         
         # Make a request to the Hugging Face API
         payload = {
-            "inputs": prompt,
+            "inputs": f"{SYSTEM_PROMPT}\n\nUser: {prompt}\nAssistant:",
             "parameters": {
-                "max_length": 500  # Adjust this value as needed
+                "max_length": 5000  # Adjust this value as needed
             }
         }
         
@@ -69,7 +72,7 @@ if prompt := st.chat_input("How can I help?"):
             
             # Extract the response text
             if response_json and 'generated_text' in response_json[0]:
-                full_response = response_json[0]['generated_text'].split("### Response:")[1].strip()
+                full_response = response_json[0]['generated_text'].split("Assistant:")[1].strip()
             else:
                 full_response = "I'm sorry, I don't have an answer to that question. Can you please ask me another question?"
         
