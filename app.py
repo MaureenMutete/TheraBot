@@ -73,6 +73,7 @@ if prompt := st.chat_input("How can I help?"):
             # Extract the response text
             if response_json and 'generated_text' in response_json[0]:
                 full_response = response_json[0]['generated_text'].split("Assistant:")[1].strip()
+                print(full_response)
             else:
                 full_response = "I'm sorry, I don't have an answer to that question. Can you please ask me another question?"
         
